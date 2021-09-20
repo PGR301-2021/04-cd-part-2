@@ -35,12 +35,18 @@ gpg --decrypt application.bin
 
 * Osx
 
-Osx brukere kan gjøre base64 dekoding og dekryptering i en kommando 
+Osx brukere kan gjøre base64 dekoding og fra kommandolinje. Evt kopier og lim det krypterte passordet inn i en fil 
+ved hjelp av en tekst-editor.
+
 ```
-  echo -n `base64 enkodet kryptert passord` | base64 --decode | gpg --decrypt
+  echo -n `base64 enkodet kryptert passord` | base64 --decode > encrypted_password.txt
+  gpg --decrypt encrypted_password.txt
 ```
+
 Du vil nå se passordet, for eksempel "9s1Lsd0#". Passordet skal være 8 tegn langt. Ignorer eventuelt % tegn på slutten av linja. 
-Når du har passordet, går du til Cloud9 url for din bruker. Kontonummer skal være 244530008913. Log inn bildet skal se omtrent slik ut
+Når du har passordet, går du til Cloud9 url for din bruker. URL skal se omtrent slik ut ; https://eu-north-1.console.aws.amazon.com/cloud9/ide/61d05eaf15e14f70ac586a4acfb8b2e0
+
+Kontonummer skal være 244530008913. Logginn bildet skal se omtrent slik ut
 
 <img title="Login" alt="Loign" src="img/1.png">
 
@@ -111,8 +117,18 @@ Test at du kan bygge og kjøre applikasjonen med
 ```
 mvn spring-boot:run
 ```
+Sjekk at applikasjonen kjører ved å bruke curl i et nytt terminalvindu 
 
-For å lage en Docker Container av Spring Boot applikasjonen din må du lage en Dockerfile
+```aidl
+curl localhost:8080                                                                                                            
+Hello
+kaam004:~/environment $ 
+```
+
+Stopp applikasjonen (Control +C) 
+
+For å lage en Docker Container av Spring Boot applikasjonen din må du lage en Dockerfile. Lag en fil som heter
+Dockerfile i samme katalog som pom.xml og kopier innholdet
 
 ```dockerfile
 FROM openjdk:8-jdk-alpine
@@ -124,11 +140,8 @@ ENTRYPOINT ["java","-jar","app.jar"]
 
 For å bruke Docker til å lage et Container Image kjører dere; 
 ```sh
-docker build . --tag pgr301 --build-arg JAR_FILE=./target/<artifactname>
+docker build . --tag pgr301 --build-arg JAR_FILE=./target/cddemo-0.0.1-SNAPSHOT.jar 
 ```
-Artifactname er filnavnet på JAR filen.  Merk at dere må bygge med Maven eller Gradle før dere kjører kommandoen. Hvis dere bygger med Maven er ikke JAR_FILE
-argumentet build/libs men target/xyz...
-
 For å starte en Container, kan dere kjøre 
 
 ```sh
@@ -141,12 +154,17 @@ Vent litt. Dette fungerte jo ikke; dere må eksponere port 8080 fra Containeren 
  docker run -p 8080:8080 pgr301:latest
  ```
 
-Du skal nå kunne kjøre nå applikasjonen din fra nettleser. 
+Sjekk at applikasjonen kjører ved å bruke curl i et nytt terminalvindu
+
+```aidl
+curl localhost:8080                                                                                                            
+Hello
+kaam004:~/environment $ 
+```
 
 # Docker hub
  
 Docker hub er en tjeneste som gjør det mulig å lagre container images sentralt, og dele disse med hele verden - eller bare et prosjekt eller team/organisasjon. 
-
 For å fullføre denne labben må dere registrere dere på Dockerub. Dere skal deretter bygge et container images lokalt - og "pushe" dette til Docker Hub.
 
 ## Registrer deg som bruker på Docker Hub
@@ -155,6 +173,7 @@ https://hub.docker.com/signup
 
 ## Bygg container image og push til docker hub
 
+Ved docker login så benytter du brukernavn og passord på Docker hub
 ```
 docker login
 docker tag <tag> <username>/<tag_remote>
@@ -169,11 +188,13 @@ docker tag fantasticapp glennbech/fantasticapp
 docker push glennbech/fantasticapp
 ```
 
-Verdien <tag> er altså en *tag* som du bestemte deg for når du gjorde docker build (pgr301:latest for eksempel). <tag_remote> kan du bestemme deg for nå, fordi det er verdien som skal brukes for docker hub. 
+Verdien <tag> er altså en *tag* som du bestemte deg for når du gjorde docker build (pgr301:latest for eksempel). <tag_remote> kan du bestemme deg for nå, fordi det er verdien som 
+skal brukes for docker hub. 
 
-## Del på Cancas Chat
+## Del på Canvas Chat
 
 Når dere har pushet container image til Docker Hub - del navnet på slack (brukernavn/image) - og forsøk å kjøre andre sine images slik 
+Endre gjerne litt på koden for å gjøre den litt mer interessant, eller si "Hei fra ditt navn".
 
 ```
  docker run -p 8080:8080 glennbech/pgr301
@@ -193,8 +214,5 @@ Husk port mappings!
 
 Bonusoppgaver; 
 
-- Registrer deg for Google Cloud Platfor (GCP) og se på tjeneste Google Cloud Run - https://cloud.google.com/run/ - gjør tutorial https://cloud.google.com/run/docs/quickstarts/build-and-deploy
-- Les om Docker i travis CI https://docs.travis-ci.com/user/docker/ 
-- Jeg har skamløst kopiert strategien med å bygge docker containere fra travis fra  i fjor. Har det skjedd noe nytt? Er  det enklere måter å bygge Docker container images fra Traivs og pushe til Docker hub? Gjør research og del på Slack eller Cancas :-)
 - Se på rammeverket https://www.togglz.org/
 - Se på terraform som kommer snart...  https://learn.hashicorp.com/tutorials/terraform/install-cli

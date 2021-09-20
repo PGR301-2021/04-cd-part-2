@@ -19,7 +19,8 @@ resource "aws_iam_user_policy" "student_policy" {
     {
       "Action": [
         "ecs:*",
-        "cloud9:*"
+        "cloud9:*",
+        "ec2:*"
       ],
       "Effect": "Allow",
       "Resource": "*"
