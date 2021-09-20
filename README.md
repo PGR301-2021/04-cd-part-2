@@ -26,16 +26,17 @@ ssb   cv25519 2021-09-20 [E]
 
 Du kan nå dekryptere passordet til din bruker 
 
-* Windowsbrukere: Gå hit. https://base64.guru/converter/decode/file - lim inn det krypterte passordet, og last ned filen application.bin
+Windowsbrukere: 
 
+* Bruk https://base64.guru/converter/decode/file - lim inn det krypterte passordet, og last ned filen application.bin
 * Kjør 
 ```
 gpg --decrypt application.bin
 ```
 
-* Osx
+Osx
 
-Osx brukere kan gjøre base64 dekoding og fra kommandolinje. Evt kopier og lim det krypterte passordet inn i en fil 
+* Osx brukere kan gjøre base64 dekoding og fra kommandolinje. Evt kopier og lim det krypterte passordet inn i en fil 
 ved hjelp av en tekst-editor.
 
 ```
@@ -52,7 +53,7 @@ Kontonummer skal være 244530008913. Logginn bildet skal se omtrent slik ut
 
 # Dagens oppgave - Dockerize en Spring Boot applikasjon - og push den til docker hub
 
-Åpne ditt Cloid 9 utviklingsmiljø, gå til terminalen og skriv 
+Åpne ditt Cloud 9 utviklingsmiljø, gå til terminalen og skriv 
 
 ```docker run hello-world``` 
 
@@ -117,14 +118,14 @@ Test at du kan bygge og kjøre applikasjonen med
 ```
 mvn spring-boot:run
 ```
-Sjekk at applikasjonen kjører ved å bruke curl i et nytt terminalvindu
+Sjekk at applikasjonen kjører ved å bruke curl i et nytt terminalvindu (Se etter et "+" tegn)
 <img title="Login" alt="Loign" src="img/2.png">
 
+Kjør kommandoen
 ```
 curl localhost:8080                                                                                                            
-Hello
-kaam004:~/environment $ 
 ```
+Og set at applikasjonen svare med "Hello"
 
 Stopp applikasjonen (Control +C) 
 
@@ -147,15 +148,14 @@ docker build . --tag pgr301 --build-arg JAR_FILE=./target/cddemo-0.0.1-SNAPSHOT.
 * Tag gir container image et mer brukervennlig navn. 
 * build arg sender en parameter til Dockerfile
 
-For å starte en Container, kan dere kjøre 
+Etter docker har bygget et container image, kan dere starte en Container med  
 
 ```sh
 docker run pgr301:latest
 ```
 
 Legg merke til latest. Vi kan bruke den syntaksen for å starte den siste versjonen av et container image. 
-
-Vent litt.... Dette fungerte jo ikke; dere må eksponere port 8080 fra Containeren på maskinen din! Dette kalles port mapping. 
+Vent litt. Dette fungerte jo ikke; dere må eksponere port 8080 fra Containeren på maskinen din! Dette kalles port mapping. 
 
 ```bash
  docker run -p 8080:8080 pgr301:latest
