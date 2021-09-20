@@ -1,18 +1,52 @@
-# LAB 4
+# Docker & Cloud 9
 
-# Liste over Docker kommandoer dere kommer til å trenge; 
+## Installer gpg (Gnu Privatcy Guard)
 
-* docker tag 
-* docker build - lager docker image basert på docker files
-* docker ps - hva kjører? 
-* docker images - hva har jeg bygget ? 
-* docker run - start en container (fra et image)
-* docker logs - se på loggen fra en container 
-* docker exec --it <image> bash - "logge inn" i en container for å se hva som skjer for debug (inception) 
+* https://www.gnupg.org/download/
 
-# Dagens oppgave - Dockerize en Spring Boot applikasjon - og push denne til docker hub
+* Last ned klassen felles privatnøkkel fra Canvas og importer denne 
 
-Før du starte må du ha Docker installert på maskinen din. Hvis du kjører
+```
+gpg --import secret.asc
+```
+
+Se at du har importert nøkkel ved å kjøre følgende kommando
+```
+gpg --list-secret-keys
+```
+
+Output skal se omtrent slik ut 
+```
+-----------------------------------
+sec   ed25519 2021-09-20 [SC] [expires: 2023-09-20]
+      565076CBD1F5654153FACE76B82F2BB942F5F90A
+uid           [ unknown] pgr301
+ssb   cv25519 2021-09-20 [E]
+```
+
+Du kan nå dekryptere passordet til din bruker 
+
+* Windowsbrukere: Gå hit. https://base64.guru/converter/decode/file - lim inn det krypterte passordet, og last ned filen application.bin
+
+* Kjør 
+```
+gpg --decrypt application.bin
+```
+
+* Osx
+
+Osx brukere kan gjøre base64 dekoding og dekryptering i en kommando 
+```
+  echo -n `base64 enkodet kryptert passord` | base64 --decode | gpg --decrypt
+```
+Du vil nå se passordet, for eksempel "9s1Lsd0#". Passordet skal være 8 tegn langt. Ignorer eventuelt % tegn på slutten av linja. 
+Når du har passordet, går du til Cloud9 url for din bruker. Kontonummer skal være 244530008913. Log inn bildet skal se omtrent slik ut
+
+<img title="Login" alt="Loign" src="img/1.png">
+
+# Dagens oppgave - Dockerize en Spring Boot applikasjon - og push den til docker hub
+
+Åpne ditt Cloid 9 utviklingsmiljø, gå til terminalen og skriv 
 
 ```docker run hello-world``` 
 
@@ -43,6 +77,41 @@ Skal du få en output som ser slik ut ;
   https://docs.docker.com/userguide/
 
 ```
+
+Først må vi installere Maven i Cloud9
+```
+sudo wget http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
+sudo sed -i s/\$releasever/6/g /etc/yum.repos.d/epel-apache-maven.repo
+sudo yum install -y apache-maven
+```
+
+Vi må også oppgradere til Java 8
+
+```
+sudo yum -y install java-1.8.0-openjdk-devel
+```
+
+Vi må få Operativsystemet til å bruke den siste versjon av Java
+```
+sudo update-alternatives --config java
+sudo update-alternatives --config javac
+```
+
+Vi skal nå bruke Cloud9 miljøet til å lage et Docker image av en enkel Spring Boot applikasjon
+
+* Klon dette repositoriet inn i ditt cloud9 miljø med 
+
+```
+git clone https://github.com/PGR301-2021/04-cd-part-2.git
+cd 04-cd-part-2
+```
+
+Test at du kan bygge og kjøre applikasjonen med 
+
+```
+mvn spring-boot:run
+```
+
 For å lage en Docker Container av Spring Boot applikasjonen din må du lage en Dockerfile
 
 ```dockerfile
@@ -51,17 +120,14 @@ VOLUME /tmp
 ARG JAR_FILE
 COPY ${JAR_FILE} app.jar
 ENTRYPOINT ["java","-jar","app.jar"]
-
 ```
 
 For å bruke Docker til å lage et Container Image kjører dere; 
 ```sh
-docker build . --tag pgr301 --build-arg JAR_FILE=./build/libs/<artifactname>
+docker build . --tag pgr301 --build-arg JAR_FILE=./target/<artifactname>
 ```
-Artifactname er filnavnet på JAR filen. 
-Merk at dere må bygge med Maven eller Gradle før dere kjører kommandoen. Hvis dere bygger med Maven er ikke JAR_FILE
-argumentet build/libs men target/xyz... 
-
+Artifactname er filnavnet på JAR filen.  Merk at dere må bygge med Maven eller Gradle før dere kjører kommandoen. Hvis dere bygger med Maven er ikke JAR_FILE
+argumentet build/libs men target/xyz...
 
 For å starte en Container, kan dere kjøre 
 
@@ -85,7 +151,7 @@ For å fullføre denne labben må dere registrere dere på Dockerub. Dere skal d
 
 ## Registrer deg som bruker på Docker Hub
 
-https://www.docker.com/products/docker-hub
+https://hub.docker.com/signup
 
 ## Bygg container image og push til docker hub
 
@@ -105,7 +171,7 @@ docker push glennbech/fantasticapp
 
 Verdien <tag> er altså en *tag* som du bestemte deg for når du gjorde docker build (pgr301:latest for eksempel). <tag_remote> kan du bestemme deg for nå, fordi det er verdien som skal brukes for docker hub. 
 
-## Del på Slack
+## Del på Cancas Chat
 
 Når dere har pushet container image til Docker Hub - del navnet på slack (brukernavn/image) - og forsøk å kjøre andre sine images slik 
 
@@ -114,61 +180,15 @@ Når dere har pushet container image til Docker Hub - del navnet på slack (bruk
 ```
 Husk port mappings!
 
+# Liste over Docker kommandoer dere kommer til å trenge;
 
-# Travis bygger docker image 
-
-Legg til følgende shell script i rotkatalogen til prosjektet 
-
-```
-    #!/bin/bash
-    echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-    docker build . --tag <et navn du finner på for din app> --build-arg JAR_FILE=./target/din jar fil>
-    docker tag  <et navn du finner på for din app>  glennbech/ <et navn du finner på for din app>
-    docker push <ditt docker hub username>/<et navn du finner på for din app>
-```
-
-eksempel
-
-```
-#!/bin/bash
-echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-docker build . --tag pgr301-pingpong --build-arg JAR_FILE=./target/travisdemo-0.0.1-SNAPSHOT.jar
-docker tag pgr301-pingpong  glennbech/pgr301-pingpong
-docker push glennbech/pgr301-pingpong
-```
-
-
-Når travis kjører, trenger den å ha verdier for miljøvariablene $DOCKER_PASSWORD og $DOCKER_USERNAME
-dette må settes med travis kommandolinje 
-
-```
-travis encrypt DOCKER_USERNAME=glennbech -add env.global
-travis encrypt DOCKER_PASSWORD=sushh -add env.global
-```
-
-Etter du har kjørt disse to kommandoene vil du se at .travis.yml har endret seg og at du vil ha to krypterte verdier.
-Dette er brukernavn og passord -og blir gjort tilgjengelig for Travis under bygget - og det er det som får 
-denne linjen i scriptet til å fungere
-
-``` bash 
-echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-```
-
-Nå gjenstår det bare å få travis til å kjøre scriptet. Vi legger til "service" og "script" elementer
-
-```
-language: java
-
-services:
-- docker
-
-script:
-  - bash name_of_the_script_file
-
-env:
-  global:
-      Values will be added by travis encrypt here...
-```
+* docker tag
+* docker build - lager docker image basert på docker files
+* docker ps - hva kjører?
+* docker images - hva har jeg bygget ?
+* docker run - start en container (fra et image)
+* docker logs - se på loggen fra en container
+* docker exec --it <image> bash - "logge inn" i en container for å se hva som skjer for debug (inception)
 
 
 Bonusoppgaver; 
