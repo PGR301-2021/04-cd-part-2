@@ -1,6 +1,15 @@
 module "students" {
   source          = "../seat"
-  ami             = "ami-08a3bbf30d1f2dac7"
   for_each        = var.students
   student_id      = each.key
+  student_email   = each.value.email
+  region          = var.region
+}
+
+output "urls" {
+  value = { for student in keys(var.students) : student => module.students[student].cloud9_url }
+}
+
+output "encrypted_passwords" {
+  value = { for student in keys(var.students) : student => module.students[student].password }
 }
