@@ -2,9 +2,11 @@
 
 ## Installer gpg (Gnu Privatcy Guard)
 
+NB! Jeg har ikke fått testet dette for Windows - du må kanskje improvisere!
+
 * https://www.gnupg.org/download/
 
-* Last ned klassen felles privatnøkkel fra Canvas og importer denne 
+* Last ned klassen felles privatnøkkel fra Canvas og importer denne. Foreleser viser hvor denne ligger når undervisningen starter. 
 
 ```
 gpg --import secret.asc
