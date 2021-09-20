@@ -117,9 +117,10 @@ Test at du kan bygge og kjøre applikasjonen med
 ```
 mvn spring-boot:run
 ```
-Sjekk at applikasjonen kjører ved å bruke curl i et nytt terminalvindu 
+Sjekk at applikasjonen kjører ved å bruke curl i et nytt terminalvindu
+<img title="Login" alt="Loign" src="img/2.png">
 
-```aidl
+```
 curl localhost:8080                                                                                                            
 Hello
 kaam004:~/environment $ 
@@ -142,13 +143,19 @@ For å bruke Docker til å lage et Container Image kjører dere;
 ```sh
 docker build . --tag pgr301 --build-arg JAR_FILE=./target/cddemo-0.0.1-SNAPSHOT.jar 
 ```
+
+* Tag gir container image et mer brukervennlig navn. 
+* build arg sender en parameter til Dockerfile
+
 For å starte en Container, kan dere kjøre 
 
 ```sh
 docker run pgr301:latest
 ```
 
-Vent litt. Dette fungerte jo ikke; dere må eksponere port 8080 fra Containeren på maskinen din! Dette kalles port mapping. 
+Legg merke til latest. Vi kan bruke den syntaksen for å starte den siste versjonen av et container image. 
+
+Vent litt.... Dette fungerte jo ikke; dere må eksponere port 8080 fra Containeren på maskinen din! Dette kalles port mapping. 
 
 ```bash
  docker run -p 8080:8080 pgr301:latest
@@ -156,7 +163,7 @@ Vent litt. Dette fungerte jo ikke; dere må eksponere port 8080 fra Containeren 
 
 Sjekk at applikasjonen kjører ved å bruke curl i et nytt terminalvindu
 
-```aidl
+```
 curl localhost:8080                                                                                                            
 Hello
 kaam004:~/environment $ 
@@ -199,7 +206,6 @@ Endre gjerne litt på koden for å gjøre den litt mer interessant, eller si "He
 ```
  docker run -p 8080:8080 glennbech/pgr301
 ```
-Husk port mappings!
 
 # Liste over Docker kommandoer dere kommer til å trenge;
 
@@ -211,8 +217,6 @@ Husk port mappings!
 * docker logs - se på loggen fra en container
 * docker exec --it <image> bash - "logge inn" i en container for å se hva som skjer for debug (inception)
 
-
 Bonusoppgaver; 
 
-- Se på rammeverket https://www.togglz.org/
 - Se på terraform som kommer snart...  https://learn.hashicorp.com/tutorials/terraform/install-cli
