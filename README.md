@@ -43,7 +43,7 @@ ved hjelp av en tekst-editor.
 
 ```
   echo -n `base64 enkodet kryptert passord` | base64 --decode > encrypted_password.bin
-  gpg --decrypt encrypted_password.bin
+  gpg --decrypt encrypted_password.bin  
 ```
 
 Du vil nå se passordet, for eksempel "9s1Lsd0#". Passordet skal være 8 tegn langt. Ignorer eventuelt % tegn på slutten av linja. 
