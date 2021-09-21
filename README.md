@@ -132,7 +132,10 @@ Og set at applikasjonen svare med "Hello"
 Stopp applikasjonen (Control +C) 
 
 For å lage en Docker Container av Spring Boot applikasjonen din må du lage en Dockerfile. Lag en fil som heter
-Dockerfile i samme katalog som pom.xml og kopier innholdet
+Dockerfile i samme katalog som pom.xml og kopier innholdet. 
+
+Dette er en "multi stage" docker fil, der det først lages en container utelukkemnde for å bygge Javaapplikasjonen med Maven.
+Produktet av byggeprosessen brukes i den andre containeren som faktisk kjører Java applikasjonen. (basert på adoptopenjdk/openjdk11:alpine-slim)
 
 ```dockerfile
 FROM maven:3.6-jdk-11 as builder
@@ -183,6 +186,7 @@ For å fullføre denne labben må dere registrere dere på Dockerub. Dere skal d
 
 ## Registrer deg som bruker på Docker Hub
 
+Gå til følgende URL og registrer deg som bruker
 https://hub.docker.com/signup
 
 ## Bygg container image og push til docker hub
