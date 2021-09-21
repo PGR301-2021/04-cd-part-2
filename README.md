@@ -198,6 +198,9 @@ docker tag <tag> <username>/<tag_remote>
 docker push <username>/<tag_remote>
 ```
 
+Verdien <tag> er altså en *tag* som du bestemte deg for når du gjorde docker build (pgr301:latest for eksempel). <tag_remote> kan du bestemme deg for nå, fordi det er verdien som 
+skal brukes for docker hub. 
+
 Eksempel
 
 ```
@@ -205,9 +208,6 @@ docker login
 docker tag fantasticapp glennbech/fantasticapp
 docker push glennbech/fantasticapp
 ```
-
-Verdien <tag> er altså en *tag* som du bestemte deg for når du gjorde docker build (pgr301:latest for eksempel). <tag_remote> kan du bestemme deg for nå, fordi det er verdien som 
-skal brukes for docker hub. 
 
 ## Del på Canvas Chat
 
