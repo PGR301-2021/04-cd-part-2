@@ -68,6 +68,9 @@ variable "students" {
     hayo001 = {
       email = "hayo001@feide.egms.no"
     }
+     danib = {
+       email = "danib@feide.egms.no"
+     }
   }
 }
 

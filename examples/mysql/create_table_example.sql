@@ -9,3 +9,4 @@ CREATE TABLE IF NOT EXISTS tasks (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )
 INSERT INTO tasks(title, status,priority) VALUES ('buy milk',0,1)
+X
