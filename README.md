@@ -144,7 +144,7 @@ ENTRYPOINT ["java","-jar","app.jar"]
 
 For å bruke Docker til å lage et Container Image kjører dere; 
 ```sh
-docker build . --tag pgr301 --build-arg JAR_FILE=./target/cddemo-0.0.1-SNAPSHOT.jar 
+docker build . --tag pgr301 
 ```
 
 * Tag gir container image et mer brukervennlig navn. 
