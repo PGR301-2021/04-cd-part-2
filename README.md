@@ -135,11 +135,16 @@ For å lage en Docker Container av Spring Boot applikasjonen din må du lage en 
 Dockerfile i samme katalog som pom.xml og kopier innholdet
 
 ```dockerfile
-FROM openjdk:8-jdk-alpine
-VOLUME /tmp
-ARG JAR_FILE
-COPY ${JAR_FILE} app.jar
-ENTRYPOINT ["java","-jar","app.jar"]
+FROM maven:3.6-jdk-11 as builder
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn package
+
+FROM adoptopenjdk/openjdk11:alpine-slim
+COPY --from=builder /app/target/*.jar /app/application.jar
+ENTRYPOINT ["java","-jar","/app/application.jar"]
+
 ```
 
 For å bruke Docker til å lage et Container Image kjører dere; 
