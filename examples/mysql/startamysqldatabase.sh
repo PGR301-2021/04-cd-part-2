@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Use the command tdocker exec -it <container id> bash - to log into your server and play around
+# Use the command docker exec -it <container id> bash - to log into your server and play around
 # mysql -u root -p
 # create database PGR301;
 # use PGR301

@@ -1,65 +1,14 @@
 # Docker & Cloud 9
 
-## Installer gpg (Gnu Privatcy Guard)
+#  Dockerize a Spring Boot App and publish to Docker hub
 
-NB! Jeg har ikke fått testet dette for Windows - du må kanskje improvisere!
+Open your Cloud9 Environment. Instructions are given in the classroom
+Verify that docker is installed in your Cloud9 environment.
 
-* https://www.gnupg.org/download/
-
-* Last ned klassen felles privatnøkkel fra Canvas og importer denne. Foreleser viser hvor denne ligger når undervisningen starter. 
-
-```
-gpg --import secret.asc
-```
-
-Se at du har importert nøkkel ved å kjøre følgende kommando
-```
-gpg --list-secret-keys
-```
-
-Output skal se omtrent slik ut 
-```
------------------------------------
-sec   ed25519 2021-09-20 [SC] [expires: 2023-09-20]
-      565076CBD1F5654153FACE76B82F2BB942F5F90A
-uid           [ unknown] pgr301
-ssb   cv25519 2021-09-20 [E]
-```
-
-Du kan nå dekryptere passordet til din bruker 
-
-Windowsbrukere: 
-
-* Bruk https://base64.guru/converter/decode/file - lim inn det krypterte passordet, og last ned filen application.bin
-* Kjør 
-```
-gpg --decrypt application.bin
-```
-
-Osx
-
-* Osx brukere kan gjøre base64 dekoding og fra kommandolinje. Evt kopier og lim det krypterte passordet inn i en fil 
-ved hjelp av en tekst-editor.
-
-```
-  echo -n `base64 enkodet kryptert passord` | base64 --decode > encrypted_password.bin
-  gpg --decrypt encrypted_password.bin  
-```
-
-Du vil nå se passordet, for eksempel "9s1Lsd0#". Passordet skal være 8 tegn langt. Ignorer eventuelt % tegn på slutten av linja. 
-Når du har passordet, går du til Cloud9 url for din bruker. URL skal se omtrent slik ut ; https://eu-north-1.console.aws.amazon.com/cloud9/ide/61d05eaf15e14f70ac586a4acfb8b2e0
-
-Kontonummer skal være 244530008913. Logginn bildet skal se omtrent slik ut
-
-<img title="Login" alt="Loign" src="img/1.png">
-
-# Dagens oppgave - Dockerize en Spring Boot applikasjon - og push den til docker hub
-
-Åpne ditt Cloud 9 utviklingsmiljø, gå til terminalen og skriv 
 
 ```docker run hello-world``` 
 
-Skal du få en output som ser slik ut ; 
+Expected result
 
 ```Unable to find image hello-world:latest locally
  Pulling repository hello-world
@@ -87,55 +36,41 @@ Skal du få en output som ser slik ut ;
 
 ```
 
-Først må vi installere Maven i Cloud9
+Install required software in your cloud 9 environment
 ```
 sudo wget http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
 sudo sed -i s/\$releasever/6/g /etc/yum.repos.d/epel-apache-maven.repo
 sudo yum install -y apache-maven
 ```
 
-Vi må også oppgradere til Java 8
-
+We also need to upgrade Java and make the OS use version 11.
 ```
 sudo yum -y install java-1.8.0-openjdk-devel
-```
-
-Vi må få Operativsystemet til å bruke den siste versjon av Java
-```
 sudo update-alternatives --config java
-sudo update-alternatives --config javac
 ```
 
-Vi skal nå bruke Cloud9 miljøet til å lage et Docker image av en enkel Spring Boot applikasjon
+We are now going to use this cloud 9 environment to build and run a simple Spring Boot Application.
 
-* Klon dette repositoriet inn i ditt cloud9 miljø med 
+Go to the terminal in Cloud and and clone this repository
 
 ```
 git clone https://github.com/PGR301-2021/04-cd-part-2.git
 cd 04-cd-part-2
 ```
 
-Test at du kan bygge og kjøre applikasjonen med 
-
+Make sure you can run the application with maven. 
 ```
 mvn spring-boot:run
 ```
-Sjekk at applikasjonen kjører ved å bruke curl i et nytt terminalvindu (Se etter et "+" tegn)
-<img title="Login" alt="Loign" src="img/2.png">
 
-Kjør kommandoen
+Make sure that the application is up and running
 ```
 curl localhost:8080                                                                                                            
 ```
-Og set at applikasjonen svare med "Hello"
+Or, select "Toools > Preview > Preview running application" in the Cloud 9 UI.
 
-Stopp applikasjonen (Control +C) 
-
-For å lage en Docker Container av Spring Boot applikasjonen din må du lage en Dockerfile. Lag en fil som heter
-Dockerfile i samme katalog som pom.xml og kopier innholdet. 
-
-Dette er en "multi stage" docker fil, der det først lages en container utelukkemnde for å bygge Javaapplikasjonen med Maven.
-Produktet av byggeprosessen brukes i den andre containeren som faktisk kjører Java applikasjonen. (basert på adoptopenjdk/openjdk11:alpine-slim)
+You will now create a Dockerfile to package the spring boot app into a container. Note that this is a multi stage docker file.
+Read up on how they work here; https://docs.docker.com/develop/develop-images/multistage-build/
 
 ```dockerfile
 FROM maven:3.6-jdk-11 as builder
@@ -150,84 +85,80 @@ ENTRYPOINT ["java","-jar","/app/application.jar"]
 
 ```
 
-For å bruke Docker til å lage et Container Image kjører dere; 
+Build a container image using this docker file 
+
 ```sh
-docker build . --tag pgr301 
+docker build . --tag <give the image a name>
 ```
 
-* Tag gir container image et mer brukervennlig navn. 
-* build arg sender en parameter til Dockerfile
-
-Etter docker har bygget et container image, kan dere starte en Container med  
-
+You can now run the container image
 ```sh
 docker run pgr301:latest
 ```
 
-Legg merke til latest. Vi kan bruke den syntaksen for å starte den siste versjonen av et container image. 
-Vent litt. Dette fungerte jo ikke; dere må eksponere port 8080 fra Containeren på maskinen din! Dette kalles port mapping. 
+When you start the container. It will not respond to localhost on port 8080. Why? Remember port mapping? 
+Try to start two container from the same image, one on port 8081 and one on 8080.
 
-```bash
- docker run -p 8080:8080 pgr301:latest
- ```
+## Sign up for Docker hub
 
-Sjekk at applikasjonen kjører ved å bruke curl i et nytt terminalvindu
-
-```
-curl localhost:8080                                                                                                            
-Hello
-kaam004:~/environment $ 
-```
-
-# Docker hub
- 
-Docker hub er en tjeneste som gjør det mulig å lagre container images sentralt, og dele disse med hele verden - eller bare et prosjekt eller team/organisasjon. 
-For å fullføre denne labben må dere registrere dere på Dockerub. Dere skal deretter bygge et container images lokalt - og "pushe" dette til Docker Hub.
-
-## Registrer deg som bruker på Docker Hub
-
-Gå til følgende URL og registrer deg som bruker
 https://hub.docker.com/signup
 
-## Bygg container image og push til docker hub
-
-Ved docker login så benytter du brukernavn og passord på Docker hub
+## Build a container image and push it to Docker hub
 ```
 docker login
-docker tag <tag> <username>/<tag_remote>
+docker tag <tag> <dockerhub_username>/<tag_remote>
 docker push <username>/<tag_remote>
 ```
 
-Verdien <tag> er altså en *tag* som du bestemte deg for når du gjorde docker build (pgr301:latest for eksempel). <tag_remote> kan du bestemme deg for nå, fordi det er verdien som 
-skal brukes for docker hub. 
+The "tag" is the tag you chose when you did ````docker build```` in the previous step.
 
-Eksempel
-
+Example:
 ```
 docker login
 docker tag fantasticapp glennbech/fantasticapp
 docker push glennbech/fantasticapp
 ```
 
-## Del på Canvas Chat
+## Share the joy! 
 
-Når dere har pushet container image til Docker Hub - del navnet på slack (brukernavn/image) - og forsøk å kjøre andre sine images slik 
-Endre gjerne litt på koden for å gjøre den litt mer interessant, eller si "Hei fra ditt navn".
+Once the image is published to Docker hub. Publish the name in the Slack channel so others can pull your container image.
+Change the code and write a secret message instead of hello?
 
 ```
  docker run -p 8080:8080 glennbech/pgr301
 ```
 
-# Liste over Docker kommandoer dere kommer til å trenge;
 
-* docker tag
-* docker build - lager docker image basert på docker files
-* docker ps - hva kjører?
-* docker images - hva har jeg bygget ?
-* docker run - start en container (fra et image)
-* docker logs - se på loggen fra en container
-* docker exec --it <image> bash - "logge inn" i en container for å se hva som skjer for debug (inception)
+## Now over to ECS 
 
-Bonusoppgaver; 
+* Authenticate Docker with ECR. You need to figure out how to do this yourself.
 
-- Se på terraform som kommer snart...  https://learn.hashicorp.com/tutorials/terraform/install-cli
+## Create an ECR repository for your service 
+
+```sh
+  aws ecr create-repository --repository-name <pick a name>
+```
+
+## Push container images to the ECR repository
+
+```sh
+
+docker build -t myapp .
+docker tag ecs-sample-app:latest xyz.dkr.ecr.us-east-2.amazonaws.com/ecs-sample-app
+aws ecr --region eu-west-1 get-login --no-include-email --registry-ids xyz| bash
+docker push xyz.dkr.ecr.us-east-2.amazonaws.com/myapp
+
+(xyz) is your (my) account ID 
+```
+
+## Try to deploy this container to the AWS Apprunner Service
+
+The AWS Apprunner service has a Wizard like interface/UI that lets you publish containers
+straight to the internet - providing all infra for you. 
+Find the Service in the AWS cnsole and use it to deploy your web application, that has been pushed to ECR. 
+
+## For extra credit 
+
+* Look in the examples folder. Try to compile some go, and run MySQL on your computer with Docker
+* Optimize build time and image size; https://whitfin.io/speeding-up-maven-docker-builds/
+* Have a look at the Terraform coder in the infra directory ...
