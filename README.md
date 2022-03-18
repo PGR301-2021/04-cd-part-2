@@ -91,9 +91,9 @@ Build a container image using this docker file
 docker build . --tag <give the image a name>
 ```
 
-You can now run the container image
+You can now run the container image - and turn it into a container
 ```sh
-docker run pgr301:latest
+docker run <image name>:latest
 ```
 
 When you start the container. It will not respond to localhost on port 8080. Why? Remember port mapping? 
@@ -104,6 +104,10 @@ Try to start two container from the same image, one on port 8081 and one on 8080
 https://hub.docker.com/signup
 
 ## Build a container image and push it to Docker hub
+
+It's very straight forward to push container images to Docker hub once you are authenticated. 
+You create a tag under your Docker Hub user, that reference a local tag. And then push the Docker hub tag. 
+
 ```
 docker login
 docker tag <tag> <dockerhub_username>/<tag_remote>
@@ -124,14 +128,9 @@ docker push glennbech/fantasticapp
 Once the image is published to Docker hub. Publish the name in the Slack channel so others can pull your container image.
 Change the code and write a secret message instead of hello?
 
-```
- docker run -p 8080:8080 glennbech/pgr301
-```
-
-
 ## Now over to ECS 
 
-* Authenticate Docker with ECR. You need to figure out how to do this yourself.
+* Authenticate Docker with ECR. You need to figure out how to do this yourself. You will have to substitute docker login with something more elaborate.
 
 ## Create an ECR repository for your service 
 
