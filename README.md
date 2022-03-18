@@ -134,6 +134,8 @@ Change the code and write a secret message instead of hello?
 
 ## Create an ECR repository for your service 
 
+You'll need to find this out yourself :-) 
+
 ```sh
   aws ecr (CENCSORRED!) <pick a name>
 ```
