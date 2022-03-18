@@ -146,7 +146,7 @@ You'll need to find this out yourself :-)
 
 docker build -t myapp .
 docker tag ecs-sample-app:latest xyz.dkr.ecr.us-east-2.amazonaws.com/ecs-sample-app
-aws ecr --region eu-west-1 get-login --no-include-email --registry-ids xyz| bash
+(Instructiopns missing)
 docker push xyz.dkr.ecr.us-east-2.amazonaws.com/myapp
 
 (xyz) is your (my) account ID 
