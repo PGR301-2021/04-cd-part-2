@@ -135,7 +135,7 @@ Change the code and write a secret message instead of hello?
 ## Create an ECR repository for your service 
 
 ```sh
-  aws ecr create-repository --repository-name <pick a name>
+  aws ecr (CENCSORRED!) <pick a name>
 ```
 
 ## Push container images to the ECR repository
