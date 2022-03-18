@@ -67,7 +67,7 @@ Make sure that the application is up and running
 ```
 curl localhost:8080                                                                                                            
 ```
-Or, select "Toools > Preview > Preview running application" in the Cloud 9 UI.
+Or, select "Tools > Preview > Preview running application" in the Cloud 9 UI.
 
 You will now create a Dockerfile to package the spring boot app into a container. Note that this is a multi stage docker file.
 Read up on how they work here; https://docs.docker.com/develop/develop-images/multistage-build/
