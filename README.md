@@ -43,14 +43,7 @@ sudo sed -i s/\$releasever/6/g /etc/yum.repos.d/epel-apache-maven.repo
 sudo yum install -y apache-maven
 ```
 
-We also need to upgrade Java and make the OS use version 11.
-```
-sudo yum -y install java-1.8.0-openjdk-devel
-sudo update-alternatives --config java
-```
-
 We are now going to use this cloud 9 environment to build and run a simple Spring Boot Application.
-
 Go to the terminal in Cloud and and clone this repository
 
 ```
@@ -64,13 +57,18 @@ mvn spring-boot:run
 ```
 
 Make sure that the application is up and running
+
+If you like the terminal
 ```
 curl localhost:8080                                                                                                            
 ```
-Or, select "Tools > Preview > Preview running application" in the Cloud 9 UI.
+Or, select "Tools > Preview > Preview running application" in the Top menu bar of the Cloud 9 UI.
 
 You will now create a Dockerfile to package the spring boot app into a container. Note that this is a multi stage docker file.
 Read up on how they work here; https://docs.docker.com/develop/develop-images/multistage-build/
+
+Copy this content into a file called ```Dockerfile``` in the same directory as the cloned source code. 
+The file should be a sibling to the ```src``` directory where the Java code is. 
 
 ```dockerfile
 FROM maven:3.6-jdk-11 as builder
@@ -125,38 +123,32 @@ docker push glennbech/fantasticapp
 
 ## Share the joy! 
 
-Once the image is published to Docker hub. Publish the name in the Slack channel so others can pull your container image.
+Once the image is published to Docker hub. Publish the name in the Slack/Zoom channel so others can pull your container image.
 Change the code and write a secret message instead of hello?
 
-## Now over to ECS 
-
-* Authenticate Docker with ECR. You need to figure out how to do this yourself. You will have to substitute docker login with something more elaborate.
-
-## Create an ECR repository for your service 
+## Extra challenge 1: Create an ECR repository for your service
 
 You'll need to find this out yourself :-) 
+Can you do it from cloud9 using the CLI instead of the UI?
 
-```sh
-  aws ecr (CENCSORRED!) <pick a name>
-```
+## Extra challenge 2: Push a container image to your ECR repository
 
-## Push container images to the ECR repository
+* Authenticate Docker with ECR.
+* This is "almost" done the same way you did with ```docker login``` to docker hub. 
+* You need to figure out how to do this yourself! Google it. 
 
+Example:
 ```sh
 
 docker build -t myapp .
 docker tag ecs-sample-app:latest xyz.dkr.ecr.us-east-2.amazonaws.com/ecs-sample-app
-(Instructiopns missing)
 docker push xyz.dkr.ecr.us-east-2.amazonaws.com/myapp
-
-(xyz) is your (my) account ID 
 ```
 
-## Try to deploy this container to the AWS Apprunner Service
+## Extra challenge 3: Try to deploy this container to the AWS Apprunner Service
 
 The AWS Apprunner service has a Wizard like interface/UI that lets you publish containers
-straight to the internet - providing all infra for you. 
-Find the Service in the AWS cnsole and use it to deploy your web application, that has been pushed to ECR. 
+straight to the internet - providing all infra for you. Find the Service in the AWS console and use it to deploy your web application, that has been pushed to ECR. 
 
 ## For extra credit 
 
